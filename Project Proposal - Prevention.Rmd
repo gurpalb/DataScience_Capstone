@@ -1,0 +1,91 @@
+---
+title: "Project Proposal"
+author: "Gurpal Bisra"
+date: "May 15, 2016"
+output: 
+  html_document
+  
+---
+
+<!-- Codechunk Parameters -->
+```{r setup, echo = FALSE, include = FALSE, eval = FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      eval = TRUE, 
+                      message = FALSE,
+                      warning = FALSE, 
+                      fig.path = "Figures/",
+                      fig.width = 12, 
+                      fig.height = 8)
+```
+
+<!-- ## R Markdown
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this: 
+-->
+
+<!-- Project Proposal Questions -->
+### 1.	What is the problem you want to solve?
+
+**I want to determine which areas of healthcare prevention should have better funding, and research dedicated to, for preventing future deaths in the United States.** Pursuing finding a solution to this problem would allow me to leverage my domain knowledge ascertained through volunteering in healthcare organizations such as the Vancouver Crisis Centre, Health Initiative for Men, and the Scotiabank AIDS Walk for Life, and King's College Hospital NHS Foundation. I would like to work with USA data and extrapolate my results, under certain assumptions, for improving Canadian healthcare.
+
+
+### 2.	Who is your client and why do they care about this problem? In other words, what will your client DO or DECIDE based on your analysis that they wouldn't have otherwise?
+
+Determining which areas of prevention can be better funded to prevent future deaths in the USA will result in less money spent on healthcare dollars. My clients are health centers, such as hospitals, that distribute healthcare services under ObamaCare. They would care about this problem because if more money is saved while providing healthcare, they can hire new staff, afford to introduce new healthcare technologies, serve a greater number of people, and the wait times should be shorter. For example, my clients are currently having difficulty keeping their costs low as the rate of healthcare expenditure increases nationwide. The results of my analysis would allow my client to instead make decisions regarding their practices to reduce their overall costs in the long-run. This solves the aforementioned project above.
+
+
+### 3.	What data are you going to use for this? How will you acquire this data?
+
+**I will use the following datasets:**
+
+1. Health Insurance Marketplace
+    -https://www.kaggle.com/hhsgov/health-insurance-marketplace
+2. Death in the United States
+    -https://www.kaggle.com/cdc/mortality
+3. Hospital Readmissions Reduction Program
+    -http://catalog.data.gov/dataset/hospital-readmissions-reduction-program
+4. Prevention Quality Indicator (PQI) Composite Measure Rates by County, 2008-2012
+    -http://catalog.data.gov/dataset/prevention-quality-indicator-pqi-composite-measure-rates-by-county-2008-2012-a6bc4
+5. US Chronic Disease Indicators
+    -http://catalog.data.gov/dataset/u-s-chronic-disease-indicators-cdi-ff843
+6. National Health Expenditures (US)
+    -https://www.quandl.com/data/USCENSUS/HEALTH_EXP-National-Health-Expenditures-U-S
+7. Medicare Preventable Hospitalizations
+    -http://catalog.data.gov/dataset/medicare-preventable-hospitalizations
+8. CA Wellness Plan Data Reference Guide
+    -http://catalog.data.gov/dataset/ca-wellness-plan-data-reference-guide-0b833
+9. Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beginning 2009 
+    -http://catalog.data.gov/dataset/hospital-inpatient-prevention-quality-indicators-pqi-for-adult-discharges-by-zip-code-spar
+
+
+### 4.	In brief, outline your initial approach to solving this problem.
+
+**My brief outline for my initial approach to solving the problem is as follows:**
+
+1. Download the nine datasets mentioned in the previous section.
+2. For each dataset:
+    + Load it into R
+    + Read the headers
+    + Determine which variables are dependent and independent
+    + Explore the data by plotting dependent vs. indepenent variables
+    + Go deeper where trends are observed.
+3. Determine which variables are common or related. 
+    + In particular, I will determine which output variables have multiple input variables
+    + Combine data that are related to the same output
+4. Combine my relevant data into a single dataset.
+    + Requires datawrangling libraries: "dplyr" and "tidyr"
+5. Visualize data by graphs to communicate my data story flow:
+    + Requires plotting library: "ggplot2"
+    + Find most common diseases which kill people --> 
+    + How can these diseases be prevented (i.e. prevention) --> 
+    + What variables affect prevention --> 
+    + Is funding allocated to each variable?
+6. Construct a model to answer my data science question.
+7. Write regression or machine learning algorithms to predict how the number of deaths can be prevented in the future by funding certain prevention variables
+8. Develop visualizations of my data and include them in my slide deck. 
+
+
+### 5.	What are your deliverables? Typically, this would include code, along with a paper and/or a slide deck.
+
+My deliverables include my code, final report, slide deck, and GitHub repository containing all of my programming files. For example, my code would include my R programming for loading my data, data wrangling, exploratory data analysis, and visualization of my results. In contrast, my slide deck would focus on articulating my hypothesis, inferences and the impact my results would have on my client's business decisions. All files would be available for download on my GitHub repository.

@@ -1,0 +1,73 @@
+---
+title: "3 Capstone Project Ideas"
+author: "Gurpal Bisra"
+date: "April 23, 2016"
+output: html_document
+---
+
+<!-- Codechunk Parameters -->
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, 
+                      eval = TRUE, 
+                      message = FALSE,
+                      warning = FALSE, 
+                      fig.path = "Figures/",
+                      fig.width = 12, 
+                      fig.height = 8)
+```
+
+<!-- ## R Markdown
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this: 
+-->
+
+<!-- Capstone Project Proposal Ideas -->
+### Idea #1
+
+**To reduce the number of deaths across the US by determining which areas of healthcare prevention should be better funded.** This problem will leverage my domain knowledge as I have volunteered in many healthcare institutions including King's College Hospital NHS Foundation. My analysis would allow healthcare professionals and government leaders to make healthcare decisions regarding prevention, which would result in saving lives, and spend less money on healthcare in general. 
+
+First, I would find the most common diseases which kill people; then determine whether means of prevention exist for them. I would relate these to prevention variables to how each variable target is funded annually. Since I live in Canada, I plan to make the assumption that the results of my US data analysis can be extrapolated for the Canadian healthcare system. Thus, I could potentially use the following datasets:
+
+1. Health Insurance Marketplace
+    -https://www.kaggle.com/hhsgov/health-insurance-marketplace
+2. Death in the United States
+    -https://www.kaggle.com/cdc/mortality
+3. Hospital Readmissions Reduction Program
+    -http://catalog.data.gov/dataset/hospital-readmissions-reduction-program
+4. Prevention Quality Indicator (PQI) Composite Measure Rates by County, 2008-2012
+    -http://catalog.data.gov/dataset/prevention-quality-indicator-pqi-composite-measure-rates-by-county-2008-2012-a6bc4
+5. US Chronic Disease Indicators
+    -http://catalog.data.gov/dataset/u-s-chronic-disease-indicators-cdi-ff843
+6. National Health Expenditures (US)
+    -https://www.quandl.com/data/USCENSUS/HEALTH_EXP-National-Health-Expenditures-U-S
+
+
+### Idea #2
+
+**To reduce the number of hospital readmissions by determining where healthcare funding should be allocated.** In particular, this problem requires determining which health indicators are correlated with particular health problems resulting in hospital readmissions. This problem will leverage my domain knowledge as I have volunteered in many healthcare institutions including King's College Hospital NHS Foundation. My analysis would allow healthcare professionals and government leaders to take actions to monitor patients who are at higher risk of hospital readmission. For example, hospitals save money if a patient doesn't require hospital readmission; saved money can allow institutions to hire new staff, purchase novel healthcare technologies, and care for more patients as wait times should be reduced. 
+
+First, I would find the most common causes of patients requiring hospital readmissions; then determine whether means of rehabilitation or monitoring exist for such patients. I would relate these rehabilitation and monitoring variables to how each variable target is funded annually. Since I live in Canada, I plan to make the assumption that the results of my US data analysis can be extrapolated for the Canadian healthcare system. Thus, I could potentially use the following datasets:
+
+1. Rates of TBI-related Emergency Department Visits, Hospitalizations, and Deaths by Sex - United States, 2001-2010
+    -http://catalog.data.gov/dataset/rates-of-tbi-related-emergency-department-visits-hospitalizations-and-deaths-by-sex-united-408b7
+2. Community Health Status Indicators (CHSI) to Combat Obesity, Heart Disease and Cancer 
+    -http://catalog.data.gov/dataset/community-health-status-indicators-chsi-to-combat-obesity-heart-disease-and-cancer
+3. American College of Cardiology Percutaneous Coronary Intervention (PCI) Readmission Measure 
+    -http://catalog.data.gov/dataset/american-college-of-cardiology-percutaneous-coronary-intervention-pci-readmission-measure
+4. Hospital Readmissions Reduction Program
+    -http://catalog.data.gov/dataset/hospital-readmissions-reduction-program
+5. Medicaid Chronic Conditions, Inpatient Admissions and Emergency Room Visits by Zip Code: Beginning 2012
+    -http://catalog.data.gov/dataset/medicaid-chronic-conditions-inpatient-admissions-and-emergency-room-visits-by-zip-code-beg
+
+
+### Idea #3
+
+**To determine how health insurance plans can be optimized across the US to provide the most benefits for their insurees at the lowest possible cost.** This problem will leverage my domain knowledge as I have volunteered in many healthcare institutions including King's College Hospital NHS Foundation. My analysis would allow the Centers for Medicare & Medicaid Services (CMS) and small business to make decisions to reduce the cost of their insurance plans. Consequently, they should be able to insure more people while maintaining a productive workforce.
+
+First, I would explore which benefits are required by citizens across the US and what type of insurance plan they can afford. Then, I would explore how rates and benefits vary across the US; and how plans vary across insurance network providers. I would then determine which plan various citizens would most benefit from given their income. Thus, I could potentially use the following datasets:
+
+1. Health Insurance Marketplace
+    -https://www.kaggle.com/hhsgov/health-insurance-marketplace
+2. National Health Expenditures (US)
+    -https://www.quandl.com/data/USCENSUS/HEALTH_EXP-National-Health-Expenditures-U-S
