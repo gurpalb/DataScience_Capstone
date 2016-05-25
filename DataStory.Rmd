@@ -7,8 +7,13 @@ output:
 ---
 <!-- ## R Markdown Help: <http://rmarkdown.rstudio.com> -->
 **RStudio Version 0.99.896**
-
 **R Version 3.3.0**
+
+## Introduction
+This script explores the mortality data in the United States *(for the year 2014)* based on the data released by the Centers for Disease Control and Prevention. It focuses on the natural cases, trying to find correlations or clear patterns to pay attention for. For examples it looks into the frequency of suicide cases for the different age ranges, for both males and females. In addition it raises question such as:
+
+* Is there a correlation between education level and particular diseases?
+* Is there a clear patterns related to age, sex, sex, educational background?
 
 ## Set the Working Directory and Install Packages
 
@@ -43,7 +48,7 @@ library("Hmisc")                # Many functions for data analysis + visualizati
 ```
 
 <!-- Set Codechunk Parameters -->
-```{r Setup, include=FALSE}
+```{r Codechunk, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, 
                       eval = TRUE, 
                       message = FALSE,
@@ -53,7 +58,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.height = 8)
 ```
 
-## Downloaded Datasets
+## Downloaded Dataset
 
 1. **Death in the United States** 
 -https://www.kaggle.com/cdc/mortality (Database)
@@ -85,32 +90,12 @@ knitr::opts_chunk$set(echo = FALSE,
     + RaceRecode5.csv =                     [Header, 6 x 2]
     + ResidentStatus.csv =                  [Header, 5 x 2]
     + CauseRecode39.csv =                   [Header, 41 x 2]
-    
-2. **Health Insurance Marketplace** -https://www.kaggle.com/hhsgov/health-insurance-marketplace
-    + BenefitsCostSharing.csv = [Header, 1,048,576 > x 32]
-    + BusinessRules.csv =       [Header, 21086 x 21]
-    + Crosswalk2015.csv =       [Header, 132506 x 21]
-    + Crosswalk2015.csv =       [Header, 150006 x 21]
-    + Network.csv =             [Header, 3823 x 12]
-    + PlanAttributes.csv =      [Header, 77354 x 176]
-    + Rate.csv =                [Header, 1,048,576 > x 24]
-    + ServiceArea.csv =         [Header, 42248 x 18]
-        
-3. **US Chronic Disease Indicators**
--http://catalog.data.gov/dataset/u-s-chronic-disease-indicators-cdi-ff843
-    + USCDI.csv =  [Header, 53470 x 19]
-
-4. **National Health Expenditures (US)**
--https://www.quandl.com/data/USCENSUS/HEALTH_EXP-National-Health-Expenditures-U-S
-    + USNHE.csv =  [Header, 101 x 14]
 
 ## Load Datasets into RStudio
 
 ```{r Load Datasets, eval = FALSE, echo = TRUE}
 # Read in and Examine Data Set #
-
-# 1. Death in the United States
-DRec <- read.csv("2/DeathRecords.csv", header = TRUE)
+DRec <- read.csv("DeathRecords.csv", , stringsAsFactors = FALSE, header = TRUE)
 dim(DRec)
 head(DRec, 20)
 str(DRec)
@@ -120,11 +105,13 @@ DRec_names_new <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10',
 names(DRec) <- DRec_names_new
 head(DRec)
 
-# Create an internal reference table (for humans) for column headings and their defintions #
+# Create an internal reference table (for humans) for column headings and their defintions
 
 # Create two vectors, variable and definition then cbind into a descrition table #
 variable <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32', 'c33', 'c34', 'c35', 'c36', 'c37', 'c38')
+
 definition <- c("Id", "ResidentStatus", "Education1989Revision", "Education2003Revision", "EducationReportingFlag", "MonthOfDeath", "Sex", "AgeType", "Age", "AgeSubstitutionFlag", "AgeRecode52", "AgeRecode27", "AgeRecode12", "InfantAgeRecode22", "PlaceOfDeathAndDecedentsStatus", "MaritalStatus", "DayOfWeekOfDeath", "CurrentDataYear", "InjuryAtWork", "MannerOfDeath", "MethodOfDisposition", "Autopsy", "ActivityCode", "PlaceOfInjury", "Icd10Code", "CauseRecode358", "CauseRecode113", "InfantCauseRecode130", "CauseRecode39", "NumberOfEntityAxisConditions", "NumberOfRecordAxisConditions", "Race", "BridgedRaceFlag", "RaceImputationFlag", "RaceRecode3", "RaceRecode5", "HispanicOrigin", "HispanicOriginRaceRecode")
+
 DRec_descriptions_table <- cbind(variable, definition)
 DRec_descriptions_table
 
@@ -150,12 +137,62 @@ DRec_descriptions_table
 
 # Check for missing values and visually inspect length #
 DRec_check <- na.omit(DRec)
-length(DRec$c26)
-length(DRec_check$c26)
-# Both [1] 2631171
+length(DRec$c29)
+length(DRec_check$c29)
+# Both [1] 2631171; therefore, there are no missing values
 
-# Remove irrelevant columns
-# DRec1 <- DRec[ , -which(names(DRec) %in% c("c1","c18", "c25", # "c27", "c29", "c27", "c7", "c16", "c19", "c21", "c22"))]
+```       
+
+## Find the most common method of death
+
+```{r Manner of Death, include=FALSE}
+# Determine the most common cause of death
+ggplot(DRec, aes(x = c20)) + geom_histogram(binwidth = 1)
+# Most people died of natural causes
+
+ggplot(DRec, aes(x = c29)) + geom_histogram(binwidth = 0.5)
+
+x <- DRec[, c('c29')]
+y <- table(x)
+rev(tail(sort(y),5))
+# 37     21     22     15      8 
+# 505958 365442 206883 159952 155749
+# Most common causes of natural deaths are:
+# #1 = code 37 =  Motor vehicle accidents
+# #2 = code 21 = Ischemic heart diseases
+# #3 = code 22 = Other diseases of heart
+# #4 = code 15 = Other malignant neoplasms (Cancer)
+# #5 = code 8 = Malignant neoplasm of stomach
+
+```
+
+## Data Exploration
+In the following sections I will explore the data of people who died of natural causes such as sex, age, educational background, race, and marital status.
+
+```{r Load Files, eval = FALSE, echo = TRUE}
+AgeType <-read.csv("AgeType.csv", stringsAsFactors = FALSE, header = TRUE)
+Edu2003 <-read.csv("Education2003Revision.csv", stringsAsFactors = FALSE, header = TRUE)
+RaceRecode3 <-read.csv("RaceRecode3.csv", stringsAsFactors = FALSE, header = TRUE)
+Marital_table<-read.csv("MaritalStatus.csv", stringsAsFactors = FALSE, header = TRUE)
+CauseRecode39 <-read.csv("CauseRecode39.csv", stringsAsFactors = FALSE, header = TRUE)
+
+```
+
+## Cleanup Relevant DeathRecords Dataset Variables
+
+### Extracting and filtering Natural Death Cases
+I will extract the entries with MannerOfDeath == 7 (i.e. died of natural causes) for the top five most common causes of death.
+
+```{r Natural Causes, eval = FALSE, echo = TRUE}
+### Extracting and filtering death by natural causes
+NatCause <- DRec %>%
+        filter(c20 == 7)
+
+NatCause1 <- filter(NatCause, c29 == 37 | c29 == 21 | c29 == 22 | c29 == 15 | c29 == 8)
+      
+```
+
+I will extract the entries with MannerOfDeath == 7
 
 DRec2 <- DRec[ , c(7,9,20,24,26, 27, 28, 29)]
 
@@ -168,177 +205,13 @@ plot(sample1)
 # par("las")
 # [1] 0
 
-# Also plot the histogram for the Manner of Death
-ggplot(DRec, aes(x = c20)) + geom_histogram(binwidth=1)
-
-# ---------------------------------------------------------------
-# 2. Health Insurance Marketplace
-BCS <- read.csv("1/BenefitsCostSharing.csv", header = TRUE)
-dim(BCS)
-# [1] 5048408   32
-dim(BCS)
-head(BCS, 20)
-str(BCS)
-
-# Replace Column Names for ease of typing and conform with naming standards #
-BCS_names_new <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32')
-names(BCS) <- BCS_names_new
-head(BCS)
-
-# Create an internal reference table (for humans) for column headings and their defintions #
-
-# Create two vectors, variable and definition then cbind into a descrition table #
-variable2 <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32')
-definition2 <- c("BenefitName", "BusinessYear", "CoinsInnTier1", "CoinsInnTier2", "CoinsOutofNet", "CopayInnTier1", "CopayInnTier2", "CopayOutofNet", "EHBVarReason", "Exclusions", "Explanation", "ImportDate", "IsCovered", "IsEHB", "IsExclFromInnMOOP", "IsExclFromOonMOOP", "IsStateMandate", "IsSubjToDedTier1", "IsSubjToDedTier2", "IssuerId", "IssuerId2", "LimitQty", "LimitUnit", "MinimumStay", "PlanId", "QuantLimitOnSvc", "RowNumber", "SourceName", "StandardComponentId", "StateCode", "StateCode2", "VersionNum")
-BCS_descriptions_table <- cbind(variable2, definition2)
-BCS_descriptions_table
-
-#  [1] "BenefitName"         "BusinessYear"       
-#  [3] "CoinsInnTier1"       "CoinsInnTier2"      
-#  [5] "CoinsOutofNet"       "CopayInnTier1"      
-#  [7] "CopayInnTier2"       "CopayOutofNet"      
-#  [9] "EHBVarReason"        "Exclusions"         
-# [11] "Explanation"         "ImportDate"         
-# [13] "IsCovered"           "IsEHB"              
-# [15] "IsExclFromInnMOOP"   "IsExclFromOonMOOP"  
-# [17] "IsStateMandate"      "IsSubjToDedTier1"   
-# [19] "IsSubjToDedTier2"    "IssuerId"           
-# [21] "IssuerId2"           "LimitQty"           
-# [23] "LimitUnit"           "MinimumStay"        
-# [25] "PlanId"              "QuantLimitOnSvc"    
-# [27] "RowNumber"           "SourceName"         
-# [29] "StandardComponentId" "StateCode"          
-# [31] "StateCode2"          "VersionNum"  
-
-# Check for missing values and visually inspect length #
-BCS_check <- na.omit(BCS)
-length(BCS$c13)
-# [1] 5048408
-length(BCS_check$c13)
-# [1] 568; therefore, missing values
-
-BCS1 <- BCS[ , c(13,30)]
-
-sample2 <- BCS1[sample(1:nrow(BCS1), "100", replace = FALSE), ]
-plot(sample2)
-
-# ---------------------------------------------------------------
-
-# 3. US Chronic Disease Indicators
-USCDI <- read.csv("USCDI.csv", header = TRUE)
-dim(USCDI)
-# [1] 53469   19
-dim(USCDI)
-head(USCDI, 20)
-str(USCDI)
-
-# Replace Column Names for ease of typing and conform with naming standards #
-USCDI_names_new <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19')
-names(USCDI) <- USCDI_names_new
-head(USCDI)
-
-# Create an internal reference table (for humans) for column headings and their defintions #
-
-# Create two vectors, variable and definition then cbind into a descrition table #
-variable3 <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19')
-definition3 <- c("ï..Year", "LocationAbbr", "LocationDesc", "Category", "Indicator", "Datasource", "DataValueUnit", "DataValueType", "DataValue", "DataValueAlt", "DataValueFootnoteSymbol", "DataValueFootnote", "Gender", "StratificationID1", "IndicatorID", "LocationID", "LowConfidenceInterval", "HighConfidenceInterval", "GeoLocation")          
-USCDI_descriptions_table <- cbind(variable3, definition3)
-USCDI_descriptions_table
-
-#  [1] "ï..Year"                 "LocationAbbr"           
-#  [3] "LocationDesc"            "Category"               
-#  [5] "Indicator"               "Datasource"             
-#  [7] "DataValueUnit"           "DataValueType"          
-#  [9] "DataValue"               "DataValueAlt"           
-# [11] "DataValueFootnoteSymbol" "DataValueFootnote"      
-# [13] "Gender"                  "StratificationID1"      
-# [15] "IndicatorID"             "LocationID"             
-# [17] "LowConfidenceInterval"   "HighConfidenceInterval" 
-# [19] "GeoLocation"            
-
-# Check for missing values and visually inspect length #
-USCDI_check <- na.omit(USCDI)
-length(USCDI$c2)
-# [1] 0 
-length(USCDI_check$c2)
-# [1] 0; not indicative since character data
-
-USCDI1 <- USCDI[ , c(2,4)]
-
-sample3 <- USCDI1[sample(1:nrow(USCDI), "1000", replace = FALSE), ]
-plot(sample3)
-
-# ---------------------------------------------------------------
-
-# 4. National Health Expenditures (US)
-NHE <- read.csv("USNHE.csv", header = TRUE)
-dim(NHE)
-# [1] 100   14
-dim(NHE)
-head(NHE, 20)
-str(NHE)
-
-# Replace Column Names for ease of typing and conform with naming standards #
-NHE_names_new <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14')
-names(NHE) <- NHE_names_new
-head(NHE)
-
-# Create an internal reference table (for humans) for column headings and their defintions #
-
-# Create two vectors, variable and definition then cbind into a descrition table #
-variable4 <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14')
-definition4 <- c("Year", "National.Health.Expenditures", "Health.Consumption.Expenditures", "Total", "Hospital.Care", "Physician.and.Clinical.Services", "Other.Professional.Services", "Dental.Services", "Other.Health.Residential.and.Personal", "Home.Health.Care", "Nursing.Care", "Prescription.Drugs", "Durable.Medical.Equipment", "Other.Non.Durable.Equipment")  
-NHE_descriptions_table <- cbind(variable4, definition4)
-NHE_descriptions_table
-
-#  [1] "Year"                                 
-#  [2] "National.Health.Expenditures"         
-#  [3] "Health.Consumption.Expenditures"      
-#  [4] "Total"                                
-#  [5] "Hospital.Care"                        
-#  [6] "Physician.and.Clinical.Services"      
-#  [7] "Other.Professional.Services"          
-#  [8] "Dental.Services"                      
-#  [9] "Other.Health.Residential.and.Personal"
-# [10] "Home.Health.Care"                     
-# [11] "Nursing.Care"                         
-# [12] "Prescription.Drugs"                   
-# [13] "Durable.Medical.Equipment"            
-# [14] "Other.Non.Durable.Equipment"
-
-# Check for missing values and visually inspect length #
-NHE_check <- na.omit(NHE)
-length(NHE$c11)
-# [1] 100 
-length(NHE_check$c11)
-# [1] 100; not missing any data
-
-NHE1 <- NHE[ , c(4,5,6,7,8,9,10,11,12,13.14)]
-
-sample4 <- NHE1[sample(1:nrow(NHE1), "100", replace = FALSE), ]
-plot(sample4)
-
-```       
-
-## Data Exploration
-I want to explore the data of people who died of natural causes including sex, age, race. 
-
-```{r Headers, eval = FALSE, echo = TRUE}
-
-AgeType<-read.csv("2/AgeType.csv",stringsAsFactors = F,header = T)
-
-```
-
-## Cleanup Relevant DeathRecords Dataset Variables
-
-```{r DeathRecords, eval = FALSE, echo = TRUE}
 
 
 ```
 
 ## Death Records EDA - find the most common preventable deaths
 
-```{r Death Records EDA, eval = FALSE, echo = TRUE}
+```{r Death Records EDA, eval = TRUE, echo = TRUE}
 # Death Count vs. Manner of Death
 ggplot(DRec, aes(x = c20)) +
   geom_histogram(binwidth = 1)
