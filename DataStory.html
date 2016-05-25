@@ -139,6 +139,7 @@ install.packages(&quot;tidyr&quot;, lib=&quot;C:/Program Files/R/R-3.3.0/library
 install.packages(&quot;ggplot2&quot;, lib=&quot;C:/Program Files/R/R-3.3.0/library&quot;)
 install.packages(&quot;DT&quot;, lib=&quot;C:/Program Files/R/R-3.3.0/library&quot;)    
 install.packages(&quot;devtools&quot;, lib=&quot;C:/Program Files/R/R-3.3.0/library&quot;)
+install.packages(&quot;Hmisc&quot;, lib=&quot;C:/Program Files/R/R-3.3.0/library&quot;)
 
 library(&quot;rmarkdown&quot;)            # Dynamic documents
 library(&quot;knitr&quot;)                # Run R Code Chunks
@@ -147,6 +148,7 @@ library(&quot;tidyr&quot;)                # Data Wrangling
 library(&quot;ggplot2&quot;)              # Plotting
 library(&quot;DT&quot;)                   # Interactive HTML tables
 library(&quot;devtools&quot;)             # To include the session information
+library(&quot;Hmisc&quot;)                # Many functions for data analysis + visualization
 
 .libPaths()
 # [1] &quot;\\\\Mac/Home/Documents/R/win-library/3.3&quot; &quot;C:/Program Files/R/R-3.3.0/library&quot;</code></pre>
@@ -155,17 +157,6 @@ library(&quot;devtools&quot;)             # To include the session information
 <div id="downloaded-datasets" class="section level2">
 <h2>Downloaded Datasets</h2>
 <ol style="list-style-type: decimal">
-<li><strong>Health Insurance Marketplace</strong> -<a href="https://www.kaggle.com/hhsgov/health-insurance-marketplace" class="uri">https://www.kaggle.com/hhsgov/health-insurance-marketplace</a>
-<ul>
-<li>BenefitsCostSharing.csv = [Header, 1,048,576 &gt; x 32]</li>
-<li>BusinessRules.csv = [Header, 21086 x 21]</li>
-<li>Crosswalk2015.csv = [Header, 132506 x 21]</li>
-<li>Crosswalk2015.csv = [Header, 150006 x 21]</li>
-<li>Network.csv = [Header, 3823 x 12]</li>
-<li>PlanAttributes.csv = [Header, 77354 x 176]</li>
-<li>Rate.csv = [Header, 1,048,576 &gt; x 24]</li>
-<li>ServiceArea.csv = [Header, 42248 x 18]</li>
-</ul></li>
 <li><strong>Death in the United States</strong> -<a href="https://www.kaggle.com/cdc/mortality" class="uri">https://www.kaggle.com/cdc/mortality</a> (Database)
 <ul>
 <li><strong>DeathRecords.csv = [Header, 1,048,576 &gt; x 38]</strong></li>
@@ -195,14 +186,18 @@ library(&quot;devtools&quot;)             # To include the session information
 <li>RaceRecode3.csv = [Header, 4 x 2]</li>
 <li>RaceRecode5.csv = [Header, 6 x 2]</li>
 <li>ResidentStatus.csv = [Header, 5 x 2]</li>
+<li>CauseRecode39.csv = [Header, 41 x 2]</li>
 </ul></li>
-<li><strong>Hospital Readmissions Reduction Program</strong> -<a href="http://catalog.data.gov/dataset/hospital-readmissions-reduction-program" class="uri">http://catalog.data.gov/dataset/hospital-readmissions-reduction-program</a>
+<li><strong>Health Insurance Marketplace</strong> -<a href="https://www.kaggle.com/hhsgov/health-insurance-marketplace" class="uri">https://www.kaggle.com/hhsgov/health-insurance-marketplace</a>
 <ul>
-<li>HospReadmission.csv = [Header, 16696 x 12]</li>
-</ul></li>
-<li><strong>Prevention Quality Indicator (PQI) Composite Measure Rates by County, 2008-2012</strong> -<a href="http://catalog.data.gov/dataset/prevention-quality-indicator-pqi-composite-measure-rates-by-county-2008-2012-a6bc4" class="uri">http://catalog.data.gov/dataset/prevention-quality-indicator-pqi-composite-measure-rates-by-county-2008-2012-a6bc4</a>
-<ul>
-<li>PQI.csv = [Header, 26 x 16]</li>
+<li>BenefitsCostSharing.csv = [Header, 1,048,576 &gt; x 32]</li>
+<li>BusinessRules.csv = [Header, 21086 x 21]</li>
+<li>Crosswalk2015.csv = [Header, 132506 x 21]</li>
+<li>Crosswalk2015.csv = [Header, 150006 x 21]</li>
+<li>Network.csv = [Header, 3823 x 12]</li>
+<li>PlanAttributes.csv = [Header, 77354 x 176]</li>
+<li>Rate.csv = [Header, 1,048,576 &gt; x 24]</li>
+<li>ServiceArea.csv = [Header, 42248 x 18]</li>
 </ul></li>
 <li><strong>US Chronic Disease Indicators</strong> -<a href="http://catalog.data.gov/dataset/u-s-chronic-disease-indicators-cdi-ff843" class="uri">http://catalog.data.gov/dataset/u-s-chronic-disease-indicators-cdi-ff843</a>
 <ul>
@@ -212,79 +207,31 @@ library(&quot;devtools&quot;)             # To include the session information
 <ul>
 <li>USNHE.csv = [Header, 101 x 14]</li>
 </ul></li>
-<li><strong>Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beginning 2009</strong> -<a href="http://catalog.data.gov/dataset/hospital-inpatient-prevention-quality-indicators-pqi-for-adult-discharges-by-zip-code-spar" class="uri">http://catalog.data.gov/dataset/hospital-inpatient-prevention-quality-indicators-pqi-for-adult-discharges-by-zip-code-spar</a>
-<ul>
-<li>SPARCS.csv = [Header, 167688 x 6]</li>
-</ul></li>
 </ol>
 </div>
 <div id="load-datasets-into-rstudio" class="section level2">
 <h2>Load Datasets into RStudio</h2>
-<pre class="r"><code># 1. Health Insurance Marketplace
-BenCostShar &lt;- read.csv(&quot;1/BenefitsCostSharing.csv&quot;, header = TRUE)
-dim(BenCostShar)
-# [1] 5048408   32
+<pre class="r"><code># Read in and Examine Data Set #
 
-# 2. Death in the United States
+# 1. Death in the United States
 DRec &lt;- read.csv(&quot;2/DeathRecords.csv&quot;, header = TRUE)
 dim(DRec)
-# Warning messages:
-# 1: In type.convert(data[[i]], as.is = as.is[i], dec = dec, numerals = numerals,  :
-#  Reached total allocation of 4095Mb: see help(memory.size)
-# 2: In type.convert(data[[i]], as.is = as.is[i], dec = dec, numerals = numerals,  :
-#  Reached total allocation of 4095Mb: see help(memory.size)
-# [1] 2631171   38
+head(DRec, 20)
+str(DRec)
 
-# 3. Hospital Readmissions Reduction Program
-HReadm &lt;- read.csv(&quot;HospReadmission.csv&quot;, header = TRUE)
-dim(HReadm)
-# [1] 16695   12
+# Replace Column Names for ease of typing and conform with naming standards #
+DRec_names_new &lt;- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32', 'c33', 'c34', 'c35', 'c36', 'c37', 'c38')
+names(DRec) &lt;- DRec_names_new
+head(DRec)
 
-# 4. Prevention Quality Indicator (PQI) Composite Measure Rates by County, 2008-2012
-PQI &lt;- read.csv(&quot;PQI.csv&quot;, header = TRUE)
-dim(PQI)
-# [1] 25  16
+# Create an internal reference table (for humans) for column headings and their defintions #
 
-# 5. US Chronic Disease Indicators
-USCDI &lt;- read.csv(&quot;USCDI.csv&quot;, header = TRUE)
-dim(USCDI)
-# [1] 53469   19
+# Create two vectors, variable and definition then cbind into a descrition table #
+variable &lt;- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32', 'c33', 'c34', 'c35', 'c36', 'c37', 'c38')
+definition &lt;- c(&quot;Id&quot;, &quot;ResidentStatus&quot;, &quot;Education1989Revision&quot;, &quot;Education2003Revision&quot;, &quot;EducationReportingFlag&quot;, &quot;MonthOfDeath&quot;, &quot;Sex&quot;, &quot;AgeType&quot;, &quot;Age&quot;, &quot;AgeSubstitutionFlag&quot;, &quot;AgeRecode52&quot;, &quot;AgeRecode27&quot;, &quot;AgeRecode12&quot;, &quot;InfantAgeRecode22&quot;, &quot;PlaceOfDeathAndDecedentsStatus&quot;, &quot;MaritalStatus&quot;, &quot;DayOfWeekOfDeath&quot;, &quot;CurrentDataYear&quot;, &quot;InjuryAtWork&quot;, &quot;MannerOfDeath&quot;, &quot;MethodOfDisposition&quot;, &quot;Autopsy&quot;, &quot;ActivityCode&quot;, &quot;PlaceOfInjury&quot;, &quot;Icd10Code&quot;, &quot;CauseRecode358&quot;, &quot;CauseRecode113&quot;, &quot;InfantCauseRecode130&quot;, &quot;CauseRecode39&quot;, &quot;NumberOfEntityAxisConditions&quot;, &quot;NumberOfRecordAxisConditions&quot;, &quot;Race&quot;, &quot;BridgedRaceFlag&quot;, &quot;RaceImputationFlag&quot;, &quot;RaceRecode3&quot;, &quot;RaceRecode5&quot;, &quot;HispanicOrigin&quot;, &quot;HispanicOriginRaceRecode&quot;)
+DRec_descriptions_table &lt;- cbind(variable, definition)
+DRec_descriptions_table
 
-# 6. National Health Expenditures (US)
-USNHE &lt;- read.csv(&quot;USNHE.csv&quot;, header = TRUE)
-dim(USNHE)
-# [1] 100   14
-
-# 7. Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beginning 2009
-SPARCS &lt;- read.csv(&quot;SPARCS.csv&quot;, header = TRUE)
-dim(SPARCS)
-# [1] 167687  6</code></pre>
-</div>
-<div id="determine-dependent-and-independent-variables-in-datasets" class="section level2">
-<h2>Determine Dependent and Independent Variables in Datasets</h2>
-<pre class="r"><code># 1. Health Insurance Marketplace
-nBenCostShar &lt;- colnames(BenCostShar)
-nBenCostShar
-#  [1] &quot;BenefitName&quot;         &quot;BusinessYear&quot;       
-#  [3] &quot;CoinsInnTier1&quot;       &quot;CoinsInnTier2&quot;      
-#  [5] &quot;CoinsOutofNet&quot;       &quot;CopayInnTier1&quot;      
-#  [7] &quot;CopayInnTier2&quot;       &quot;CopayOutofNet&quot;      
-#  [9] &quot;EHBVarReason&quot;        &quot;Exclusions&quot;         
-# [11] &quot;Explanation&quot;         &quot;ImportDate&quot;         
-# [13] &quot;IsCovered&quot;           &quot;IsEHB&quot;              
-# [15] &quot;IsExclFromInnMOOP&quot;   &quot;IsExclFromOonMOOP&quot;  
-# [17] &quot;IsStateMandate&quot;      &quot;IsSubjToDedTier1&quot;   
-# [19] &quot;IsSubjToDedTier2&quot;    &quot;IssuerId&quot;           
-# [21] &quot;IssuerId2&quot;           &quot;LimitQty&quot;           
-# [23] &quot;LimitUnit&quot;           &quot;MinimumStay&quot;        
-# [25] &quot;PlanId&quot;              &quot;QuantLimitOnSvc&quot;    
-# [27] &quot;RowNumber&quot;           &quot;SourceName&quot;         
-# [29] &quot;StandardComponentId&quot; &quot;StateCode&quot;          
-# [31] &quot;StateCode2&quot;          &quot;VersionNum&quot;     
-
-# 2. Death in the United States
-nDRec &lt;- colnames(DRec)
-nDRec
 #  [1] &quot;Id&quot;                             &quot;ResidentStatus&quot;                
 #  [3] &quot;Education1989Revision&quot;          &quot;Education2003Revision&quot;         
 #  [5] &quot;EducationReportingFlag&quot;         &quot;MonthOfDeath&quot;                  
@@ -305,31 +252,103 @@ nDRec
 # [35] &quot;RaceRecode3&quot;                    &quot;RaceRecode5&quot;                   
 # [37] &quot;HispanicOrigin&quot;                 &quot;HispanicOriginRaceRecode&quot;
 
-# 3. Hospital Readmissions Reduction Program
-nHReadm &lt;- colnames(HReadm)
-nHReadm
-#  [1] &quot;Hospital.Name&quot;              &quot;Provider.Number&quot;           
-#  [3] &quot;State&quot;                      &quot;Measure.Name&quot;              
-#  [5] &quot;Number.of.Discharges&quot;       &quot;Footnote&quot;                  
-#  [7] &quot;Excess.Readmission.Ratio&quot;   &quot;Predicted.Readmission.Rate&quot;
-#  [9] &quot;Expected.Readmission.Rate&quot;  &quot;Number.of.Readmissions&quot;    
-# [11] &quot;Start.Date&quot;                 &quot;End.Date&quot;                 
+# Check for missing values and visually inspect length #
+DRec_check &lt;- na.omit(DRec)
+length(DRec$c26)
+length(DRec_check$c26)
+# Both [1] 2631171
 
-# 4. Prevention Quality Indicator (PQI) Composite Measure Rates by County, 2008-2012
-nPQI &lt;- colnames(PQI)
-nPQI
-#  [1] &quot;County&quot;                   &quot;Overall.Composite_CY2012&quot;
-#  [3] &quot;Overall.Composite_CY2011&quot; &quot;Overall.Composite_CY2010&quot;
-#  [5] &quot;Overall.Composite_CY2009&quot; &quot;Overall.Composite_CY2008&quot;
-#  [7] &quot;Acute.Composite_CY2012&quot;   &quot;Acute.Composite_CY2011&quot;  
-#  [9] &quot;Acute.Composite_CY2010&quot;   &quot;Acute.Composite_CY2009&quot;  
-# [11] &quot;Acute.Composite_CY2008&quot;   &quot;Chronic.Composite_CY2012&quot;
-# [13] &quot;Chronic.Composite_CY2011&quot; &quot;Chronic.Composite_CY2010&quot;
-# [15] &quot;Chronic.Composite_CY2009&quot; &quot;Chronic.Composite_CY2008&quot;
+# Remove irrelevant columns
+# DRec1 &lt;- DRec[ , -which(names(DRec) %in% c(&quot;c1&quot;,&quot;c18&quot;, &quot;c25&quot;, # &quot;c27&quot;, &quot;c29&quot;, &quot;c27&quot;, &quot;c7&quot;, &quot;c16&quot;, &quot;c19&quot;, &quot;c21&quot;, &quot;c22&quot;))]
 
-# 5. US Chronic Disease Indicators
-nUSCDI &lt;- colnames(USCDI)
-nUSCDI
+DRec2 &lt;- DRec[ , c(7,9,20,24,26, 27, 28, 29)]
+
+sample1 &lt;- DRec2[sample(1:nrow(DRec2), &quot;100&quot;, replace = FALSE), ]
+plot(sample1)
+# par(&quot;mar&quot;)
+# [1] 5.1 4.1 4.1 2.1
+# par(&quot;mgp&quot;)
+# [1] 3 1 0
+# par(&quot;las&quot;)
+# [1] 0
+
+# Also plot the histogram for the Manner of Death
+ggplot(DRec, aes(x = c20)) + geom_histogram(binwidth=1)
+
+# ---------------------------------------------------------------
+# 2. Health Insurance Marketplace
+BCS &lt;- read.csv(&quot;1/BenefitsCostSharing.csv&quot;, header = TRUE)
+dim(BCS)
+# [1] 5048408   32
+dim(BCS)
+head(BCS, 20)
+str(BCS)
+
+# Replace Column Names for ease of typing and conform with naming standards #
+BCS_names_new &lt;- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32')
+names(BCS) &lt;- BCS_names_new
+head(BCS)
+
+# Create an internal reference table (for humans) for column headings and their defintions #
+
+# Create two vectors, variable and definition then cbind into a descrition table #
+variable2 &lt;- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32')
+definition2 &lt;- c(&quot;BenefitName&quot;, &quot;BusinessYear&quot;, &quot;CoinsInnTier1&quot;, &quot;CoinsInnTier2&quot;, &quot;CoinsOutofNet&quot;, &quot;CopayInnTier1&quot;, &quot;CopayInnTier2&quot;, &quot;CopayOutofNet&quot;, &quot;EHBVarReason&quot;, &quot;Exclusions&quot;, &quot;Explanation&quot;, &quot;ImportDate&quot;, &quot;IsCovered&quot;, &quot;IsEHB&quot;, &quot;IsExclFromInnMOOP&quot;, &quot;IsExclFromOonMOOP&quot;, &quot;IsStateMandate&quot;, &quot;IsSubjToDedTier1&quot;, &quot;IsSubjToDedTier2&quot;, &quot;IssuerId&quot;, &quot;IssuerId2&quot;, &quot;LimitQty&quot;, &quot;LimitUnit&quot;, &quot;MinimumStay&quot;, &quot;PlanId&quot;, &quot;QuantLimitOnSvc&quot;, &quot;RowNumber&quot;, &quot;SourceName&quot;, &quot;StandardComponentId&quot;, &quot;StateCode&quot;, &quot;StateCode2&quot;, &quot;VersionNum&quot;)
+BCS_descriptions_table &lt;- cbind(variable2, definition2)
+BCS_descriptions_table
+
+#  [1] &quot;BenefitName&quot;         &quot;BusinessYear&quot;       
+#  [3] &quot;CoinsInnTier1&quot;       &quot;CoinsInnTier2&quot;      
+#  [5] &quot;CoinsOutofNet&quot;       &quot;CopayInnTier1&quot;      
+#  [7] &quot;CopayInnTier2&quot;       &quot;CopayOutofNet&quot;      
+#  [9] &quot;EHBVarReason&quot;        &quot;Exclusions&quot;         
+# [11] &quot;Explanation&quot;         &quot;ImportDate&quot;         
+# [13] &quot;IsCovered&quot;           &quot;IsEHB&quot;              
+# [15] &quot;IsExclFromInnMOOP&quot;   &quot;IsExclFromOonMOOP&quot;  
+# [17] &quot;IsStateMandate&quot;      &quot;IsSubjToDedTier1&quot;   
+# [19] &quot;IsSubjToDedTier2&quot;    &quot;IssuerId&quot;           
+# [21] &quot;IssuerId2&quot;           &quot;LimitQty&quot;           
+# [23] &quot;LimitUnit&quot;           &quot;MinimumStay&quot;        
+# [25] &quot;PlanId&quot;              &quot;QuantLimitOnSvc&quot;    
+# [27] &quot;RowNumber&quot;           &quot;SourceName&quot;         
+# [29] &quot;StandardComponentId&quot; &quot;StateCode&quot;          
+# [31] &quot;StateCode2&quot;          &quot;VersionNum&quot;  
+
+# Check for missing values and visually inspect length #
+BCS_check &lt;- na.omit(BCS)
+length(BCS$c13)
+# [1] 5048408
+length(BCS_check$c13)
+# [1] 568; therefore, missing values
+
+BCS1 &lt;- BCS[ , c(13,30)]
+
+sample2 &lt;- BCS1[sample(1:nrow(BCS1), &quot;100&quot;, replace = FALSE), ]
+plot(sample2)
+
+# ---------------------------------------------------------------
+
+# 3. US Chronic Disease Indicators
+USCDI &lt;- read.csv(&quot;USCDI.csv&quot;, header = TRUE)
+dim(USCDI)
+# [1] 53469   19
+dim(USCDI)
+head(USCDI, 20)
+str(USCDI)
+
+# Replace Column Names for ease of typing and conform with naming standards #
+USCDI_names_new &lt;- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19')
+names(USCDI) &lt;- USCDI_names_new
+head(USCDI)
+
+# Create an internal reference table (for humans) for column headings and their defintions #
+
+# Create two vectors, variable and definition then cbind into a descrition table #
+variable3 &lt;- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19')
+definition3 &lt;- c(&quot;ï..Year&quot;, &quot;LocationAbbr&quot;, &quot;LocationDesc&quot;, &quot;Category&quot;, &quot;Indicator&quot;, &quot;Datasource&quot;, &quot;DataValueUnit&quot;, &quot;DataValueType&quot;, &quot;DataValue&quot;, &quot;DataValueAlt&quot;, &quot;DataValueFootnoteSymbol&quot;, &quot;DataValueFootnote&quot;, &quot;Gender&quot;, &quot;StratificationID1&quot;, &quot;IndicatorID&quot;, &quot;LocationID&quot;, &quot;LowConfidenceInterval&quot;, &quot;HighConfidenceInterval&quot;, &quot;GeoLocation&quot;)          
+USCDI_descriptions_table &lt;- cbind(variable3, definition3)
+USCDI_descriptions_table
+
 #  [1] &quot;ï..Year&quot;                 &quot;LocationAbbr&quot;           
 #  [3] &quot;LocationDesc&quot;            &quot;Category&quot;               
 #  [5] &quot;Indicator&quot;               &quot;Datasource&quot;             
@@ -341,9 +360,41 @@ nUSCDI
 # [17] &quot;LowConfidenceInterval&quot;   &quot;HighConfidenceInterval&quot; 
 # [19] &quot;GeoLocation&quot;            
 
-# 6. National Health Expenditures (US)
-nUSNHE &lt;- colnames(USNHE)
-nUSNHE
+# Check for missing values and visually inspect length #
+USCDI_check &lt;- na.omit(USCDI)
+length(USCDI$c2)
+# [1] 0 
+length(USCDI_check$c2)
+# [1] 0; not indicative since character data
+
+USCDI1 &lt;- USCDI[ , c(2,4)]
+
+sample3 &lt;- USCDI1[sample(1:nrow(USCDI), &quot;1000&quot;, replace = FALSE), ]
+plot(sample3)
+
+# ---------------------------------------------------------------
+
+# 4. National Health Expenditures (US)
+NHE &lt;- read.csv(&quot;USNHE.csv&quot;, header = TRUE)
+dim(NHE)
+# [1] 100   14
+dim(NHE)
+head(NHE, 20)
+str(NHE)
+
+# Replace Column Names for ease of typing and conform with naming standards #
+NHE_names_new &lt;- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14')
+names(NHE) &lt;- NHE_names_new
+head(NHE)
+
+# Create an internal reference table (for humans) for column headings and their defintions #
+
+# Create two vectors, variable and definition then cbind into a descrition table #
+variable4 &lt;- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14')
+definition4 &lt;- c(&quot;Year&quot;, &quot;National.Health.Expenditures&quot;, &quot;Health.Consumption.Expenditures&quot;, &quot;Total&quot;, &quot;Hospital.Care&quot;, &quot;Physician.and.Clinical.Services&quot;, &quot;Other.Professional.Services&quot;, &quot;Dental.Services&quot;, &quot;Other.Health.Residential.and.Personal&quot;, &quot;Home.Health.Care&quot;, &quot;Nursing.Care&quot;, &quot;Prescription.Drugs&quot;, &quot;Durable.Medical.Equipment&quot;, &quot;Other.Non.Durable.Equipment&quot;)  
+NHE_descriptions_table &lt;- cbind(variable4, definition4)
+NHE_descriptions_table
+
 #  [1] &quot;Year&quot;                                 
 #  [2] &quot;National.Health.Expenditures&quot;         
 #  [3] &quot;Health.Consumption.Expenditures&quot;      
@@ -357,101 +408,40 @@ nUSNHE
 # [11] &quot;Nursing.Care&quot;                         
 # [12] &quot;Prescription.Drugs&quot;                   
 # [13] &quot;Durable.Medical.Equipment&quot;            
-# [14] &quot;Other.Non.Durable.Equipment&quot;          
+# [14] &quot;Other.Non.Durable.Equipment&quot;
 
-# 7. Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beginning 2009
-nSPARCS &lt;- colnames(SPARCS)
-nSPARCS
-# [1] &quot;Year&quot;                            
-# [2] &quot;Patient.Zipcode&quot;                 
-# [3] &quot;PQI.Number&quot;                      
-# [4] &quot;PQI.Name&quot;                        
-# [5] &quot;Observed.Rate.Per.100.000.People&quot;
-# [6] &quot;Expected.Rate.Per.100.000.People&quot;</code></pre>
+# Check for missing values and visually inspect length #
+NHE_check &lt;- na.omit(NHE)
+length(NHE$c11)
+# [1] 100 
+length(NHE_check$c11)
+# [1] 100; not missing any data
+
+NHE1 &lt;- NHE[ , c(4,5,6,7,8,9,10,11,12,13.14)]
+
+sample4 &lt;- NHE1[sample(1:nrow(NHE1), &quot;100&quot;, replace = FALSE), ]
+plot(sample4)</code></pre>
+</div>
+<div id="data-exploration" class="section level2">
+<h2>Data Exploration</h2>
+<p>I want to explore the data of people who died of natural causes including sex, age, race.</p>
+<pre class="r"><code>AgeType&lt;-read.csv(&quot;2/AgeType.csv&quot;,stringsAsFactors = F,header = T)</code></pre>
 </div>
 <div id="cleanup-relevant-deathrecords-dataset-variables" class="section level2">
 <h2>Cleanup Relevant DeathRecords Dataset Variables</h2>
-<pre class="r"><code># 2. Death in the United States
-# [1] &quot;Id&quot;                             
-# &quot;ResidentStatus&quot;                
-# [3] &quot;Education1989Revision&quot;          
-# &quot;Education2003Revision&quot;         
-# [5] &quot;EducationReportingFlag&quot;         
-# &quot;MonthOfDeath&quot;                  
-# [7] &quot;Sex&quot;                            
-# &quot;AgeType&quot;                       
-# [9] &quot;Age&quot;                            
-# &quot;AgeSubstitutionFlag&quot;           
-# [11] &quot;AgeRecode52&quot;                    
-# &quot;AgeRecode27&quot;                   
-# [13] &quot;AgeRecode12&quot;                    
-# &quot;InfantAgeRecode22&quot;             
-# [15] &quot;PlaceOfDeathAndDecedentsStatus&quot; 
-# &quot;MaritalStatus&quot;                 
-# [17] &quot;DayOfWeekOfDeath&quot;               
-# &quot;CurrentDataYear&quot;               
-# [19] &quot;InjuryAtWork&quot;                   
-# &quot;MannerOfDeath&quot;
-
-for (i in  1:nrow(DRec)){
-    if(DRec$MannerOfDeath[i] == 0) {
-        DRec$MannerOfDeath[i] &lt;- &quot;Not Specified&quot;
-    }
-    else if(DRec$MannerOfDeath[i] == 1) {
-        DRec$MannerOfDeath[i] &lt;- &quot;Accident&quot;
-    }
-    else if (DRec$MannerOfDeath[i] == 2) {
-        DRec$MannerOfDeath[i] &lt;- &quot;Suicide&quot;
-    }
-    else if (DRec$MannerOfDeath[i] == 3) {
-        DRec$MannerOfDeath[i] &lt;- &quot;Homicide&quot;
-    }
-    else if (DRec$MannerOfDeath[i] == 4) {
-        DRec$MannerOfDeath[i] &lt;- &quot;Pending Investigation&quot;
-    }
-    else if (DRec$MannerOfDeath[i] == 5) {
-        DRec$MannerOfDeath[i] &lt;- &quot;Unknown&quot;
-    }
-    else if (DRec$MannerOfDeath[i] == 6) {
-        DRec$MannerOfDeath[i] &lt;- &quot;Self-inflicted&quot;
-    }
-    else 
-        DRec$product_category[i] &lt;- &quot;Natural&quot;
-}
-# PROCESS IS TOO SLOW - need alternative data wrangling
-
-# DeathRecords &lt;- mutate(DeathRecords, MannerOfDeath = ifelse(MannerOfDeath == 1), &quot;Accident&quot;, 0)
-
-# DeathRecords$MannerofDeath &lt;- mutate(DeathRecords, MannerOfDeath = ifelse(MannerOfDeath == 0), &quot;Not Specified&quot;, ifelse(1), &quot;Accident&quot;, ifelse(2), &quot;Suicide&quot;, ifelse(3), &quot;Homicide&quot;, ifelse(4), &quot;Pending Investigation&quot;, ifelse(5), &quot;Unknown&quot;, ifelse(6), &quot;Self-inflicted&quot;, &quot;Natural&quot;) 
-
-# [21] &quot;MethodOfDisposition&quot;            
-# &quot;Autopsy&quot;                       
-# [23] &quot;ActivityCode&quot;                   
-# &quot;PlaceOfInjury&quot;                 
-# [25] &quot;Icd10Code&quot;                      
-# &quot;CauseRecode358&quot;                
-# [27] &quot;CauseRecode113&quot;                 
-# &quot;InfantCauseRecode130&quot;          
-# [29] &quot;CauseRecode39&quot;                  
-# &quot;NumberOfEntityAxisConditions&quot;  
-# [31] &quot;NumberOfRecordAxisConditions&quot;   
-# &quot;Race&quot;                          
-# [33] &quot;BridgedRaceFlag&quot;                
-# &quot;RaceImputationFlag&quot;            
-# [35] &quot;RaceRecode3&quot;                    
-# &quot;RaceRecode5&quot;                   
-# [37] &quot;HispanicOrigin&quot;                 
-# &quot;HispanicOriginRaceRecode&quot;</code></pre>
 </div>
 <div id="death-records-eda---find-the-most-common-preventable-deaths" class="section level2">
 <h2>Death Records EDA - find the most common preventable deaths</h2>
 <pre class="r"><code># Death Count vs. Manner of Death
-ggplot(DRec, aes(x = MannerOfDeath)) +
-  geom_histogram()
+ggplot(DRec, aes(x = c20)) +
+  geom_histogram(binwidth = 1)
 # Most people died of natural causes
 
 # Remove rows of people who died of causes other than natural death
-DRec1 &lt;- DRec[DRec$MannerOfDeath == 7, ]</code></pre>
+DRec3 &lt;- DRec[DRec$MannerOfDeath == 7, ]</code></pre>
+</div>
+<div id="view-plots" class="section level2">
+<h2>View Plots</h2>
 <!-- My Data Story - Capstone Project Milestone Report -->
 </div>
 <div id="an-introduction-to-the-problem" class="section level2">

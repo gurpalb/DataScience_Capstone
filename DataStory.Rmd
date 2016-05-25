@@ -27,6 +27,7 @@ install.packages("tidyr", lib="C:/Program Files/R/R-3.3.0/library")
 install.packages("ggplot2", lib="C:/Program Files/R/R-3.3.0/library")
 install.packages("DT", lib="C:/Program Files/R/R-3.3.0/library")    
 install.packages("devtools", lib="C:/Program Files/R/R-3.3.0/library")
+install.packages("Hmisc", lib="C:/Program Files/R/R-3.3.0/library")
 
 library("rmarkdown")            # Dynamic documents
 library("knitr")                # Run R Code Chunks
@@ -35,6 +36,7 @@ library("tidyr")                # Data Wrangling
 library("ggplot2")              # Plotting
 library("DT")                   # Interactive HTML tables
 library("devtools")             # To include the session information
+library("Hmisc")                # Many functions for data analysis + visualization
 
 .libPaths()
 # [1] "\\\\Mac/Home/Documents/R/win-library/3.3" "C:/Program Files/R/R-3.3.0/library"
@@ -53,17 +55,7 @@ knitr::opts_chunk$set(echo = FALSE,
 
 ## Downloaded Datasets
 
-1. **Health Insurance Marketplace** -https://www.kaggle.com/hhsgov/health-insurance-marketplace
-    + BenefitsCostSharing.csv = [Header, 1,048,576 > x 32]
-    + BusinessRules.csv =       [Header, 21086 x 21]
-    + Crosswalk2015.csv =       [Header, 132506 x 21]
-    + Crosswalk2015.csv =       [Header, 150006 x 21]
-    + Network.csv =             [Header, 3823 x 12]
-    + PlanAttributes.csv =      [Header, 77354 x 176]
-    + Rate.csv =                [Header, 1,048,576 > x 24]
-    + ServiceArea.csv =         [Header, 42248 x 18]
-
-2. **Death in the United States** 
+1. **Death in the United States** 
 -https://www.kaggle.com/cdc/mortality (Database)
     + **DeathRecords.csv =                  [Header, 1,048,576 > x 38]**
     + RecordAxisConditions.csv =            [Header, 1,048,576 > x 3]
@@ -92,99 +84,50 @@ knitr::opts_chunk$set(echo = FALSE,
     + RaceRecode3.csv =                     [Header, 4 x 2]
     + RaceRecode5.csv =                     [Header, 6 x 2]
     + ResidentStatus.csv =                  [Header, 5 x 2]
+    + CauseRecode39.csv =                   [Header, 41 x 2]
+    
+2. **Health Insurance Marketplace** -https://www.kaggle.com/hhsgov/health-insurance-marketplace
+    + BenefitsCostSharing.csv = [Header, 1,048,576 > x 32]
+    + BusinessRules.csv =       [Header, 21086 x 21]
+    + Crosswalk2015.csv =       [Header, 132506 x 21]
+    + Crosswalk2015.csv =       [Header, 150006 x 21]
+    + Network.csv =             [Header, 3823 x 12]
+    + PlanAttributes.csv =      [Header, 77354 x 176]
+    + Rate.csv =                [Header, 1,048,576 > x 24]
+    + ServiceArea.csv =         [Header, 42248 x 18]
         
-3. **Hospital Readmissions Reduction Program**
--http://catalog.data.gov/dataset/hospital-readmissions-reduction-program
-    + HospReadmission.csv =  [Header, 16696 x 12]
-
-4. **Prevention Quality Indicator (PQI) Composite Measure Rates by County, 2008-2012**
--http://catalog.data.gov/dataset/prevention-quality-indicator-pqi-composite-measure-rates-by-county-2008-2012-a6bc4
-    + PQI.csv =  [Header, 26 x 16]
-
-5. **US Chronic Disease Indicators**
+3. **US Chronic Disease Indicators**
 -http://catalog.data.gov/dataset/u-s-chronic-disease-indicators-cdi-ff843
     + USCDI.csv =  [Header, 53470 x 19]
 
-6. **National Health Expenditures (US)**
+4. **National Health Expenditures (US)**
 -https://www.quandl.com/data/USCENSUS/HEALTH_EXP-National-Health-Expenditures-U-S
     + USNHE.csv =  [Header, 101 x 14]
-
-7. **Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beginning 2009** 
--http://catalog.data.gov/dataset/hospital-inpatient-prevention-quality-indicators-pqi-for-adult-discharges-by-zip-code-spar
-    + SPARCS.csv =  [Header, 167688 x 6]
 
 ## Load Datasets into RStudio
 
 ```{r Load Datasets, eval = FALSE, echo = TRUE}
-# 1. Health Insurance Marketplace
-BenCostShar <- read.csv("1/BenefitsCostSharing.csv", header = TRUE)
-dim(BenCostShar)
-# [1] 5048408   32
+# Read in and Examine Data Set #
 
-# 2. Death in the United States
+# 1. Death in the United States
 DRec <- read.csv("2/DeathRecords.csv", header = TRUE)
 dim(DRec)
-# Warning messages:
-# 1: In type.convert(data[[i]], as.is = as.is[i], dec = dec, numerals = numerals,  :
-#  Reached total allocation of 4095Mb: see help(memory.size)
-# 2: In type.convert(data[[i]], as.is = as.is[i], dec = dec, numerals = numerals,  :
-#  Reached total allocation of 4095Mb: see help(memory.size)
-# [1] 2631171   38
+head(DRec, 20)
+str(DRec)
 
-# 3. Hospital Readmissions Reduction Program
-HReadm <- read.csv("HospReadmission.csv", header = TRUE)
-dim(HReadm)
-# [1] 16695   12
+# Replace Column Names for ease of typing and conform with naming standards #
+DRec_names_new <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32', 'c33', 'c34', 'c35', 'c36', 'c37', 'c38')
+names(DRec) <- DRec_names_new
+head(DRec)
 
-# 4. Prevention Quality Indicator (PQI) Composite Measure Rates by County, 2008-2012
-PQI <- read.csv("PQI.csv", header = TRUE)
-dim(PQI)
-# [1] 25  16
+# Create an internal reference table (for humans) for column headings and their defintions #
 
-# 5. US Chronic Disease Indicators
-USCDI <- read.csv("USCDI.csv", header = TRUE)
-dim(USCDI)
-# [1] 53469   19
+# Create two vectors, variable and definition then cbind into a descrition table #
+variable <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32', 'c33', 'c34', 'c35', 'c36', 'c37', 'c38')
+definition <- c("Id", "ResidentStatus", "Education1989Revision", "Education2003Revision", "EducationReportingFlag", "MonthOfDeath", "Sex", "AgeType", "Age", "AgeSubstitutionFlag", "AgeRecode52", "AgeRecode27", "AgeRecode12", "InfantAgeRecode22", "PlaceOfDeathAndDecedentsStatus", "MaritalStatus", "DayOfWeekOfDeath", "CurrentDataYear", "InjuryAtWork", "MannerOfDeath", "MethodOfDisposition", "Autopsy", "ActivityCode", "PlaceOfInjury", "Icd10Code", "CauseRecode358", "CauseRecode113", "InfantCauseRecode130", "CauseRecode39", "NumberOfEntityAxisConditions", "NumberOfRecordAxisConditions", "Race", "BridgedRaceFlag", "RaceImputationFlag", "RaceRecode3", "RaceRecode5", "HispanicOrigin", "HispanicOriginRaceRecode")
+DRec_descriptions_table <- cbind(variable, definition)
+DRec_descriptions_table
 
-# 6. National Health Expenditures (US)
-USNHE <- read.csv("USNHE.csv", header = TRUE)
-dim(USNHE)
-# [1] 100   14
-
-# 7. Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beginning 2009
-SPARCS <- read.csv("SPARCS.csv", header = TRUE)
-dim(SPARCS)
-# [1] 167687  6
-
-```       
-
-## Determine Dependent and Independent Variables in Datasets
-
-```{r Headers, eval = FALSE, echo = TRUE}
-
-# 1. Health Insurance Marketplace
-nBenCostShar <- colnames(BenCostShar)
-nBenCostShar
-#  [1] "BenefitName"         "BusinessYear"       
-#  [3] "CoinsInnTier1"       "CoinsInnTier2"      
-#  [5] "CoinsOutofNet"       "CopayInnTier1"      
-#  [7] "CopayInnTier2"       "CopayOutofNet"      
-#  [9] "EHBVarReason"        "Exclusions"         
-# [11] "Explanation"         "ImportDate"         
-# [13] "IsCovered"           "IsEHB"              
-# [15] "IsExclFromInnMOOP"   "IsExclFromOonMOOP"  
-# [17] "IsStateMandate"      "IsSubjToDedTier1"   
-# [19] "IsSubjToDedTier2"    "IssuerId"           
-# [21] "IssuerId2"           "LimitQty"           
-# [23] "LimitUnit"           "MinimumStay"        
-# [25] "PlanId"              "QuantLimitOnSvc"    
-# [27] "RowNumber"           "SourceName"         
-# [29] "StandardComponentId" "StateCode"          
-# [31] "StateCode2"          "VersionNum"     
-
-# 2. Death in the United States
-nDRec <- colnames(DRec)
-nDRec
 #  [1] "Id"                             "ResidentStatus"                
 #  [3] "Education1989Revision"          "Education2003Revision"         
 #  [5] "EducationReportingFlag"         "MonthOfDeath"                  
@@ -205,31 +148,103 @@ nDRec
 # [35] "RaceRecode3"                    "RaceRecode5"                   
 # [37] "HispanicOrigin"                 "HispanicOriginRaceRecode"
 
-# 3. Hospital Readmissions Reduction Program
-nHReadm <- colnames(HReadm)
-nHReadm
-#  [1] "Hospital.Name"              "Provider.Number"           
-#  [3] "State"                      "Measure.Name"              
-#  [5] "Number.of.Discharges"       "Footnote"                  
-#  [7] "Excess.Readmission.Ratio"   "Predicted.Readmission.Rate"
-#  [9] "Expected.Readmission.Rate"  "Number.of.Readmissions"    
-# [11] "Start.Date"                 "End.Date"                 
+# Check for missing values and visually inspect length #
+DRec_check <- na.omit(DRec)
+length(DRec$c26)
+length(DRec_check$c26)
+# Both [1] 2631171
 
-# 4. Prevention Quality Indicator (PQI) Composite Measure Rates by County, 2008-2012
-nPQI <- colnames(PQI)
-nPQI
-#  [1] "County"                   "Overall.Composite_CY2012"
-#  [3] "Overall.Composite_CY2011" "Overall.Composite_CY2010"
-#  [5] "Overall.Composite_CY2009" "Overall.Composite_CY2008"
-#  [7] "Acute.Composite_CY2012"   "Acute.Composite_CY2011"  
-#  [9] "Acute.Composite_CY2010"   "Acute.Composite_CY2009"  
-# [11] "Acute.Composite_CY2008"   "Chronic.Composite_CY2012"
-# [13] "Chronic.Composite_CY2011" "Chronic.Composite_CY2010"
-# [15] "Chronic.Composite_CY2009" "Chronic.Composite_CY2008"
+# Remove irrelevant columns
+# DRec1 <- DRec[ , -which(names(DRec) %in% c("c1","c18", "c25", # "c27", "c29", "c27", "c7", "c16", "c19", "c21", "c22"))]
 
-# 5. US Chronic Disease Indicators
-nUSCDI <- colnames(USCDI)
-nUSCDI
+DRec2 <- DRec[ , c(7,9,20,24,26, 27, 28, 29)]
+
+sample1 <- DRec2[sample(1:nrow(DRec2), "100", replace = FALSE), ]
+plot(sample1)
+# par("mar")
+# [1] 5.1 4.1 4.1 2.1
+# par("mgp")
+# [1] 3 1 0
+# par("las")
+# [1] 0
+
+# Also plot the histogram for the Manner of Death
+ggplot(DRec, aes(x = c20)) + geom_histogram(binwidth=1)
+
+# ---------------------------------------------------------------
+# 2. Health Insurance Marketplace
+BCS <- read.csv("1/BenefitsCostSharing.csv", header = TRUE)
+dim(BCS)
+# [1] 5048408   32
+dim(BCS)
+head(BCS, 20)
+str(BCS)
+
+# Replace Column Names for ease of typing and conform with naming standards #
+BCS_names_new <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32')
+names(BCS) <- BCS_names_new
+head(BCS)
+
+# Create an internal reference table (for humans) for column headings and their defintions #
+
+# Create two vectors, variable and definition then cbind into a descrition table #
+variable2 <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19', 'c20', 'c21', 'c22', 'c23', 'c24', 'c25', 'c26', 'c27', 'c28', 'c29', 'c30', 'c31', 'c32')
+definition2 <- c("BenefitName", "BusinessYear", "CoinsInnTier1", "CoinsInnTier2", "CoinsOutofNet", "CopayInnTier1", "CopayInnTier2", "CopayOutofNet", "EHBVarReason", "Exclusions", "Explanation", "ImportDate", "IsCovered", "IsEHB", "IsExclFromInnMOOP", "IsExclFromOonMOOP", "IsStateMandate", "IsSubjToDedTier1", "IsSubjToDedTier2", "IssuerId", "IssuerId2", "LimitQty", "LimitUnit", "MinimumStay", "PlanId", "QuantLimitOnSvc", "RowNumber", "SourceName", "StandardComponentId", "StateCode", "StateCode2", "VersionNum")
+BCS_descriptions_table <- cbind(variable2, definition2)
+BCS_descriptions_table
+
+#  [1] "BenefitName"         "BusinessYear"       
+#  [3] "CoinsInnTier1"       "CoinsInnTier2"      
+#  [5] "CoinsOutofNet"       "CopayInnTier1"      
+#  [7] "CopayInnTier2"       "CopayOutofNet"      
+#  [9] "EHBVarReason"        "Exclusions"         
+# [11] "Explanation"         "ImportDate"         
+# [13] "IsCovered"           "IsEHB"              
+# [15] "IsExclFromInnMOOP"   "IsExclFromOonMOOP"  
+# [17] "IsStateMandate"      "IsSubjToDedTier1"   
+# [19] "IsSubjToDedTier2"    "IssuerId"           
+# [21] "IssuerId2"           "LimitQty"           
+# [23] "LimitUnit"           "MinimumStay"        
+# [25] "PlanId"              "QuantLimitOnSvc"    
+# [27] "RowNumber"           "SourceName"         
+# [29] "StandardComponentId" "StateCode"          
+# [31] "StateCode2"          "VersionNum"  
+
+# Check for missing values and visually inspect length #
+BCS_check <- na.omit(BCS)
+length(BCS$c13)
+# [1] 5048408
+length(BCS_check$c13)
+# [1] 568; therefore, missing values
+
+BCS1 <- BCS[ , c(13,30)]
+
+sample2 <- BCS1[sample(1:nrow(BCS1), "100", replace = FALSE), ]
+plot(sample2)
+
+# ---------------------------------------------------------------
+
+# 3. US Chronic Disease Indicators
+USCDI <- read.csv("USCDI.csv", header = TRUE)
+dim(USCDI)
+# [1] 53469   19
+dim(USCDI)
+head(USCDI, 20)
+str(USCDI)
+
+# Replace Column Names for ease of typing and conform with naming standards #
+USCDI_names_new <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19')
+names(USCDI) <- USCDI_names_new
+head(USCDI)
+
+# Create an internal reference table (for humans) for column headings and their defintions #
+
+# Create two vectors, variable and definition then cbind into a descrition table #
+variable3 <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14', 'c15', 'c16', 'c17', 'c18', 'c19')
+definition3 <- c("ï..Year", "LocationAbbr", "LocationDesc", "Category", "Indicator", "Datasource", "DataValueUnit", "DataValueType", "DataValue", "DataValueAlt", "DataValueFootnoteSymbol", "DataValueFootnote", "Gender", "StratificationID1", "IndicatorID", "LocationID", "LowConfidenceInterval", "HighConfidenceInterval", "GeoLocation")          
+USCDI_descriptions_table <- cbind(variable3, definition3)
+USCDI_descriptions_table
+
 #  [1] "ï..Year"                 "LocationAbbr"           
 #  [3] "LocationDesc"            "Category"               
 #  [5] "Indicator"               "Datasource"             
@@ -241,9 +256,41 @@ nUSCDI
 # [17] "LowConfidenceInterval"   "HighConfidenceInterval" 
 # [19] "GeoLocation"            
 
-# 6. National Health Expenditures (US)
-nUSNHE <- colnames(USNHE)
-nUSNHE
+# Check for missing values and visually inspect length #
+USCDI_check <- na.omit(USCDI)
+length(USCDI$c2)
+# [1] 0 
+length(USCDI_check$c2)
+# [1] 0; not indicative since character data
+
+USCDI1 <- USCDI[ , c(2,4)]
+
+sample3 <- USCDI1[sample(1:nrow(USCDI), "1000", replace = FALSE), ]
+plot(sample3)
+
+# ---------------------------------------------------------------
+
+# 4. National Health Expenditures (US)
+NHE <- read.csv("USNHE.csv", header = TRUE)
+dim(NHE)
+# [1] 100   14
+dim(NHE)
+head(NHE, 20)
+str(NHE)
+
+# Replace Column Names for ease of typing and conform with naming standards #
+NHE_names_new <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14')
+names(NHE) <- NHE_names_new
+head(NHE)
+
+# Create an internal reference table (for humans) for column headings and their defintions #
+
+# Create two vectors, variable and definition then cbind into a descrition table #
+variable4 <- c('c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c11', 'c12', 'c13', 'c14')
+definition4 <- c("Year", "National.Health.Expenditures", "Health.Consumption.Expenditures", "Total", "Hospital.Care", "Physician.and.Clinical.Services", "Other.Professional.Services", "Dental.Services", "Other.Health.Residential.and.Personal", "Home.Health.Care", "Nursing.Care", "Prescription.Drugs", "Durable.Medical.Equipment", "Other.Non.Durable.Equipment")  
+NHE_descriptions_table <- cbind(variable4, definition4)
+NHE_descriptions_table
+
 #  [1] "Year"                                 
 #  [2] "National.Health.Expenditures"         
 #  [3] "Health.Consumption.Expenditures"      
@@ -257,17 +304,28 @@ nUSNHE
 # [11] "Nursing.Care"                         
 # [12] "Prescription.Drugs"                   
 # [13] "Durable.Medical.Equipment"            
-# [14] "Other.Non.Durable.Equipment"          
+# [14] "Other.Non.Durable.Equipment"
 
-# 7. Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beginning 2009
-nSPARCS <- colnames(SPARCS)
-nSPARCS
-# [1] "Year"                            
-# [2] "Patient.Zipcode"                 
-# [3] "PQI.Number"                      
-# [4] "PQI.Name"                        
-# [5] "Observed.Rate.Per.100.000.People"
-# [6] "Expected.Rate.Per.100.000.People"
+# Check for missing values and visually inspect length #
+NHE_check <- na.omit(NHE)
+length(NHE$c11)
+# [1] 100 
+length(NHE_check$c11)
+# [1] 100; not missing any data
+
+NHE1 <- NHE[ , c(4,5,6,7,8,9,10,11,12,13.14)]
+
+sample4 <- NHE1[sample(1:nrow(NHE1), "100", replace = FALSE), ]
+plot(sample4)
+
+```       
+
+## Data Exploration
+I want to explore the data of people who died of natural causes including sex, age, race. 
+
+```{r Headers, eval = FALSE, echo = TRUE}
+
+AgeType<-read.csv("2/AgeType.csv",stringsAsFactors = F,header = T)
 
 ```
 
@@ -275,77 +333,6 @@ nSPARCS
 
 ```{r DeathRecords, eval = FALSE, echo = TRUE}
 
-# 2. Death in the United States
-# [1] "Id"                             
-# "ResidentStatus"                
-# [3] "Education1989Revision"          
-# "Education2003Revision"         
-# [5] "EducationReportingFlag"         
-# "MonthOfDeath"                  
-# [7] "Sex"                            
-# "AgeType"                       
-# [9] "Age"                            
-# "AgeSubstitutionFlag"           
-# [11] "AgeRecode52"                    
-# "AgeRecode27"                   
-# [13] "AgeRecode12"                    
-# "InfantAgeRecode22"             
-# [15] "PlaceOfDeathAndDecedentsStatus" 
-# "MaritalStatus"                 
-# [17] "DayOfWeekOfDeath"               
-# "CurrentDataYear"               
-# [19] "InjuryAtWork"                   
-# "MannerOfDeath"
-
-for (i in  1:nrow(DRec)){
-    if(DRec$MannerOfDeath[i] == 0) {
-        DRec$MannerOfDeath[i] <- "Not Specified"
-    }
-    else if(DRec$MannerOfDeath[i] == 1) {
-        DRec$MannerOfDeath[i] <- "Accident"
-    }
-    else if (DRec$MannerOfDeath[i] == 2) {
-        DRec$MannerOfDeath[i] <- "Suicide"
-    }
-    else if (DRec$MannerOfDeath[i] == 3) {
-        DRec$MannerOfDeath[i] <- "Homicide"
-    }
-    else if (DRec$MannerOfDeath[i] == 4) {
-        DRec$MannerOfDeath[i] <- "Pending Investigation"
-    }
-    else if (DRec$MannerOfDeath[i] == 5) {
-        DRec$MannerOfDeath[i] <- "Unknown"
-    }
-    else if (DRec$MannerOfDeath[i] == 6) {
-        DRec$MannerOfDeath[i] <- "Self-inflicted"
-    }
-    else 
-        DRec$product_category[i] <- "Natural"
-}
-# PROCESS IS TOO SLOW - need alternative data wrangling
-
-# DeathRecords <- mutate(DeathRecords, MannerOfDeath = ifelse(MannerOfDeath == 1), "Accident", 0)
-
-# DeathRecords$MannerofDeath <- mutate(DeathRecords, MannerOfDeath = ifelse(MannerOfDeath == 0), "Not Specified", ifelse(1), "Accident", ifelse(2), "Suicide", ifelse(3), "Homicide", ifelse(4), "Pending Investigation", ifelse(5), "Unknown", ifelse(6), "Self-inflicted", "Natural") 
-
-# [21] "MethodOfDisposition"            
-# "Autopsy"                       
-# [23] "ActivityCode"                   
-# "PlaceOfInjury"                 
-# [25] "Icd10Code"                      
-# "CauseRecode358"                
-# [27] "CauseRecode113"                 
-# "InfantCauseRecode130"          
-# [29] "CauseRecode39"                  
-# "NumberOfEntityAxisConditions"  
-# [31] "NumberOfRecordAxisConditions"   
-# "Race"                          
-# [33] "BridgedRaceFlag"                
-# "RaceImputationFlag"            
-# [35] "RaceRecode3"                    
-# "RaceRecode5"                   
-# [37] "HispanicOrigin"                 
-# "HispanicOriginRaceRecode"
 
 ```
 
@@ -353,16 +340,22 @@ for (i in  1:nrow(DRec)){
 
 ```{r Death Records EDA, eval = FALSE, echo = TRUE}
 # Death Count vs. Manner of Death
-ggplot(DRec, aes(x = MannerOfDeath)) +
-  geom_histogram()
+ggplot(DRec, aes(x = c20)) +
+  geom_histogram(binwidth = 1)
 # Most people died of natural causes
 
 # Remove rows of people who died of causes other than natural death
-DRec1 <- DRec[DRec$MannerOfDeath == 7, ]
+DRec3 <- DRec[DRec$MannerOfDeath == 7, ]
 
 
 ```
 
+## View Plots
+
+```{r Plots1, echo = TRUE}
+
+
+```
 
 
 <!-- My Data Story - Capstone Project Milestone Report --> 
